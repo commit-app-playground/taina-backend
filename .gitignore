@@ -100,3 +100,4 @@ $RECYCLE.BIN/
 # application environment config
 .env
 secrets/secrets.yml
+.vscode

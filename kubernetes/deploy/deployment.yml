@@ -28,8 +28,8 @@ spec:
               name: taina-backend-config
           # Uncomment the secretRef block below if your Playground application has secrets
           # See the README for instructions on how to create secrets
-          #- secretRef:
-          #    name: taina-backend-secrets
+          - secretRef:
+             name: taina-backend-secrets
           readinessProbe:
             httpGet:
               port: http
