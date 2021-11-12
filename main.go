@@ -16,6 +16,9 @@ func main() {
 	bot := NewBot(nytClient, cfg.slackBotToken, cfg.slackVerificationToken)
 
 	r := http.NewServeMux()
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Hello world!")
+	})
 	r.HandleFunc("/receive", bot.HandleSlashCommand)
 	r.HandleFunc("/receive/help", bot.HandleHelpInteraction)
 
