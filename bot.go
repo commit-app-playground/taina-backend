@@ -98,27 +98,27 @@ func (b *Bot) handleTopRequest(ctx context.Context, channelID string, responseUR
 
 	// build Block message and replace response
 	var message slack.Blocks
-	message.BlockSet = append(message.BlockSet, slack.HeaderBlock{
-		Type: "header",
-		Text: &slack.TextBlockObject{
+	message.BlockSet = append(
+		message.BlockSet,
+		slack.NewHeaderBlock(&slack.TextBlockObject{
 			Type: "plain_text",
-			Text: "Here are the top stories 🗞",
-		},
-	})
+			Text: "📢 Here are the top stories 📢",
+		}),
+	)
 
 	for _, a := range articles {
 		message.BlockSet = append(
 			message.BlockSet,
-			slack.SectionBlock{
-				Type: "section",
-				Text: &slack.TextBlockObject{
-					Type: "mrkdwn",
-					Text: fmt.Sprintf("<%s|%s>\n%s", a.URL, a.Title, a.Abstract),
-				},
-			},
-			slack.DividerBlock{
-				Type: "divider",
-			})
+			slack.NewSectionBlock(&slack.TextBlockObject{
+				Type: "mrkdwn",
+				Text: fmt.Sprintf("*<%s|%s>*\n%s", a.URL, a.Title, a.Abstract),
+			}, nil, nil),
+			slack.NewContextBlock("", slack.TextBlockObject{
+				Type: "plain_text",
+				Text: a.PublishedAt,
+			}),
+			slack.NewDividerBlock(),
+		)
 	}
 
 	if _, _, err := b.slackClient.PostMessage(channelID,
@@ -132,55 +132,27 @@ func (b *Bot) handleTopRequest(ctx context.Context, channelID string, responseUR
 
 // handleHelpRequest returns a Slack Block Kit structure that renders an interactive 'help' view
 // every time an incorrect slash command is sent
-// TODO: improve this and add more categories
 func (b *Bot) handleHelpRequest(ctx context.Context, channelID string, responseURL string) {
 	var message slack.Blocks
 	message.BlockSet = append(message.BlockSet,
-		slack.HeaderBlock{
-			Type: "header",
-			Text: &slack.TextBlockObject{
-				Type: "plain_text",
-				Text: "How to use",
-			},
-		},
-		slack.DividerBlock{
-			Type: "divider",
-		},
-		slack.SectionBlock{
-			Type: "section",
-			Text: &slack.TextBlockObject{
+		slack.NewHeaderBlock(&slack.TextBlockObject{
+			Type: "plain_text",
+			Text: "See what's happening in the world 🗣",
+		}),
+		slack.NewDividerBlock(),
+		slack.NewSectionBlock(
+			&slack.TextBlockObject{
 				Type: "mrkdwn",
-				Text: "Choose a news section",
+				Text: "💡 Choose the news section you're interested in:",
 			},
-			Accessory: &slack.Accessory{
+			nil,
+			&slack.Accessory{
 				SelectElement: &slack.SelectBlockElement{
-					Type: "static_select",
-					Options: []*slack.OptionBlockObject{
-						{
-							Text: &slack.TextBlockObject{
-								Type: "plain_text",
-								Text: "General",
-							},
-							Value: "home",
-						},
-						{
-							Text: &slack.TextBlockObject{
-								Type: "plain_text",
-								Text: "Arts",
-							},
-							Value: "arts",
-						},
-						{
-							Text: &slack.TextBlockObject{
-								Type: "plain_text",
-								Text: "Politics",
-							},
-							Value: "politics",
-						},
-					},
+					Type:    "static_select",
+					Options: b.addNewsSectionsOptions(),
 				},
 			},
-		},
+		),
 	)
 
 	if _, _, err := b.slackClient.PostMessage(channelID,
@@ -189,6 +161,22 @@ func (b *Bot) handleHelpRequest(ctx context.Context, channelID string, responseU
 	); err != nil {
 		log.Println("error sending message:", err)
 	}
+}
+
+// addNewsSectionsOptions loops through the available news sections a user can request
+// and builds the appropriate options block object
+func (b *Bot) addNewsSectionsOptions() []*slack.OptionBlockObject {
+	var response []*slack.OptionBlockObject
+	for _, section := range b.newsSource.SupportedSections() {
+		response = append(response, &slack.OptionBlockObject{
+			Text: &slack.TextBlockObject{
+				Type: "plain_text",
+				Text: b.newsSource.UserFriendlySection(section),
+			},
+			Value: section,
+		})
+	}
+	return response
 }
 
 // HandleHelpInteraction handles a request coming from a 'help' view interaction

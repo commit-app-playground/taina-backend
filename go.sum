@@ -15,5 +15,5 @@ github.com/slack-go/slack v0.9.5 h1:j7uOUDowybWf9eSgZg/AbGx6J1OPJB6SE8Z5dNl6Mtw=
 github.com/slack-go/slack v0.9.5/go.mod h1:wWL//kk0ho+FcQXcBTmEafUI5dz4qz5f4mMk8oIkioQ=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
-github.com/tainacleal/nyt-go v0.1.0 h1:IVFD0604H7s86MGF2aHFMfZCe0mPyzzaBwfIG1hdyeU=
-github.com/tainacleal/nyt-go v0.1.0/go.mod h1:w899xBR0lbYotqzZRJjklSBSHMUMeyYP3M33EzZOdDw=
+github.com/tainacleal/nyt-go v0.1.1 h1:LMNcP4A0FpWHqoDP3pAX5GqnMZWdK/ig8U+gJcVicKs=
+github.com/tainacleal/nyt-go v0.1.1/go.mod h1:w899xBR0lbYotqzZRJjklSBSHMUMeyYP3M33EzZOdDw=
