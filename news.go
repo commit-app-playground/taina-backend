@@ -52,6 +52,10 @@ func (nyt *NYTimes) TopStories(ctx context.Context, section string, topN int) ([
 
 	result := []Article{}
 	for _, a := range articles {
+		// basic validation to make sure we have at least a title and a link
+		if a.Title == "" || a.ShortURL == "" {
+			continue
+		}
 		result = append(result, Article{
 			Title:       a.Title,
 			Abstract:    a.Abstract,
